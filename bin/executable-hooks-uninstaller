@@ -2,4 +2,4 @@
 
 require 'executable-hooks/uninstaller'
 
-ExecutableHooks::Uninstaller.new.uninstall
+ExecutableHooks.uninstall
