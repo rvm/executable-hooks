@@ -8,18 +8,25 @@ module ExecutableHooks
     def self.wrapper_name
       'ruby_executable_hooks'
     end
+    def self.expanded_wrapper_name
+      Gem.default_exec_format % self.wrapper_name
+    end
     def self.bindir
       Gem.respond_to?(:bindir,true) ? Gem.send(:bindir) : File.join(Gem.dir, 'bin')
     end
     def self.destination
-      File.expand_path( wrapper_name, bindir )
+      File.expand_path( expanded_wrapper_name, bindir )
     end
     def self.ensure_custom_shebang
-      Gem.configuration[:custom_shebang] ||= "$env #{self.wrapper_name}"
+      expected_shebang = "$env #{expanded_wrapper_name}"
 
-      if Gem.configuration[:custom_shebang] != "$env #{self.wrapper_name}"
+      Gem.configuration[:custom_shebang] ||= expected_shebang
+
+      if Gem.configuration[:custom_shebang] != expected_shebang
         warn("
-Warning: found rubygems custom_shebang: '#{Gem.configuration[:custom_shebang]}',
+Warning:
+    Found    custom_shebang: '#{Gem.configuration[:custom_shebang]}',
+    Expected custom_shebang: '#{expected_shebang}',
 this can potentially break 'executable-hooks' and gem executables overall!
 ")
       end
