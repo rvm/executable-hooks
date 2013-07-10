@@ -1,0 +1,15 @@
+#!/usr/bin/env ruby
+
+original_file=ARGV[0]
+ARGV.shift
+$PROGRAM_NAME=original_file
+
+require 'rubygems'
+begin
+  require 'executable-hooks/hooks'
+  Gem::ExecutableHooks.run(original_file)
+rescue LoadError
+  warn "unable to load executable-hooks/hooks" if ENV.key?('ExecutableHooks_DEBUG')
+end
+
+eval File.read(original_file), binding, original_file

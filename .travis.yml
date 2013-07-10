@@ -1,0 +1,38 @@
+language: ruby
+rvm:
+  - 1.8.7
+  - 1.9.2
+  - 1.9.3
+  - 2.0.0
+  - jruby-18mode
+  - jruby-19mode
+  - jruby-head
+  - ruby-head
+  - rbx-18mode
+  - rbx-19mode
+before_install:
+  - 'rm -rf $rvm_path/gems/*/{bin,gems}/rubygems-bundler-* $rvm_path/gems/*/{bin,gems}/executable-hooks-* $rvm_path/gems/*/bin/ruby_*_{wrapper,hooks}'
+  - hash -r
+  - 'curl -L https://get.smf.sh | sh'
+  - 'export PATH=~/.sm/bin:$PATH'
+  - 'sm ext install gem mpapis/sm_gem'
+install: gem install tf -v '>=0.4.1'
+before_script:
+  - unset BUNDLE_GEMFILE
+script: tf --text test/tf/*
+notifications:
+  irc:
+    channels:
+      - "irc.freenode.org#rubygems-bundler"
+  email:
+    recipients:
+      - mpapis@gmail.com
+    on_failure: change
+matrix:
+  allow_failures:
+    - rvm: jruby-18mode
+    - rvm: jruby-19mode
+    - rvm: jruby-head
+    - rvm: rbx-18mode
+    - rvm: rbx-19mode
+    - rvm: ruby-head
