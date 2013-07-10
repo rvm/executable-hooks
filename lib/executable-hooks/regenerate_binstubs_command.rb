@@ -33,7 +33,6 @@ class RegenerateBinstubsCommand < Gem::Command
       # https://github.com/rubygems/rubygems/issues/326
       puts "try also: gem pristine --binstubs"
     end
-    Gem.configuration[:custom_shebang] ||= '$env ruby_executable_hooks'
     ExecutableHooks::Wrapper.install
     execute_no_wrapper
   end

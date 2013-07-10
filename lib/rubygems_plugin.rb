@@ -13,7 +13,6 @@ if
 
   # Set the custom_shebang if user did not set one
   Gem.pre_install do |inst|
-    Gem.configuration[:custom_shebang] ||= '$env ruby_executable_hooks'
     ExecutableHooks::Wrapper.install
   end
 
