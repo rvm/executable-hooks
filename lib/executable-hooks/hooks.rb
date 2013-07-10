@@ -13,6 +13,24 @@ module Gem
     unless method_defined?(:load_executable_plugins)
       def load_executable_plugins
         load_plugin_files(find_files('rubygems_executable_plugin', false))
+      rescue ArgumentError, NoMethodError
+        # old rubygems
+        plugins = find_files('rubygems_executable_plugin')
+
+        plugins.each do |plugin|
+
+          # Skip older versions of the GemCutter plugin: Its commands are in
+          # RubyGems proper now.
+
+          next if plugin =~ /gemcutter-0\.[0-3]/
+
+          begin
+            load plugin
+          rescue ::Exception => e
+            details = "#{plugin.inspect}: #{e.message} (#{e.class})"
+            warn "Error loading RubyGems plugin #{details}"
+          end
+        end
       end
     end
   end
