@@ -12,7 +12,15 @@ module Gem
 
     unless method_defined?(:load_executable_plugins)
       def load_executable_plugins
-        load_plugin_files(find_files('rubygems_executable_plugin', false))
+        if ENV['RUBYGEMS_LOAD_ALL_PLUGINS']
+          load_plugin_files find_files('rubygems_executable_plugin', false)
+        else
+          begin
+            load_plugin_files find_latest_files('rubygems_executable_plugin', false)
+          rescue NoMethodError
+            load_plugin_files find_files('rubygems_executable_plugin', false)
+          end
+        end
       rescue ArgumentError, NoMethodError
         # old rubygems
         plugins = find_files('rubygems_executable_plugin')
