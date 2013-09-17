@@ -1,8 +1,7 @@
 #!/usr/bin/env ruby
 
-original_file=ARGV[0]
-ARGV.shift
-$PROGRAM_NAME=original_file
+$PROGRAM_NAME="ruby #{ARGV*" "}"
+original_file=ARGV.shift
 
 require 'rubygems'
 begin
