@@ -37,13 +37,17 @@ this can potentially break 'executable-hooks' and gem executables overall!
       executable_hooks_spec = ExecutableHooks::Specification.find
 
       if executable_hooks_spec
-        wrapper_path = File.expand_path( "bin/#{wrapper_name}", executable_hooks_spec.full_gem_path )
+        install_from( executable_hooks_spec.full_gem_path )
+      end
+    end
 
-        if File.exist?(wrapper_path) && !File.exist?(destination)
-          FileUtils.mkdir_p(bindir)
-          FileUtils.cp(wrapper_path, destination)
-          File.chmod(0775, destination)
-        end
+    def self.install_from(full_gem_path)
+      wrapper_path = File.expand_path( "bin/#{wrapper_name}", full_gem_path )
+
+      if File.exist?(wrapper_path) && !File.exist?(destination)
+        FileUtils.mkdir_p(bindir)
+        FileUtils.cp(wrapper_path, destination)
+        File.chmod(0775, destination)
       end
     end
     def self.uninstall

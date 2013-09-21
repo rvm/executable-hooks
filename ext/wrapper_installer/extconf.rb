@@ -11,10 +11,12 @@ File.open('nmake.bat', 'w') { |f| }
 
 # add the gem to load path
 $: << File.expand_path("../../../lib", __FILE__)
-# load the uninstaller
-require 'executable-hooks/uninstaller'
-# call the action
-RegenerateBinstubsCommand.new.execute
+# load the actions
+require 'executable-hooks/wrapper'
+require 'executable-hooks/regenerate_binstubs_command'
+# call the actions
+ExecutableHooks::Wrapper.install_from(File.expand_path("../../..", __FILE__))
+RegenerateBinstubsCommand.new.execute_no_wrapper
 # unload the path, what was required stays ... but there is that much we can do
 $:.pop
 

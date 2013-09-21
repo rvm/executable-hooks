@@ -52,7 +52,7 @@ class RegenerateBinstubsCommand < Gem::Command
           inst = Gem::Installer.new Dir[cache_gem].first, :wrappers => true, :force => true, :install_dir => org_gem_path
           ExecutableHooksInstaller.bundler_generate_bin(inst)
         else
-          puts "##{spec.name} #{spec.version} not found in GEM_PATH"
+          $stderr.puts "##{spec.name} #{spec.version} not found in GEM_PATH"
         end
       end
     end
