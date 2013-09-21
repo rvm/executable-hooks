@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.2.1
+date: 2013-09-22
+
+ - fix installing wrapper when first time installing the gem, fix #6
+
 ## 1.2.0
 date: 2013-09-17
 
