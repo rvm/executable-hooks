@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.2.2
+date: 2013-09-23
+
+- change process title only when supported by Process, fix #7, update #5
+
 ## 1.2.1
 date: 2013-09-22
 
