@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-$PROGRAM_NAME="ruby #{ARGV*" "}"
+Process.setproctitle("ruby #{ARGV*" "}") if Process.methods.include?(:setproctitle)
 original_file=ARGV.shift
 
 require 'rubygems'
