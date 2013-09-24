@@ -1,14 +1,15 @@
 #!/usr/bin/env ruby
 
-Process.setproctitle("ruby #{ARGV*" "}") if Process.methods.include?(:setproctitle)
-original_file=ARGV.shift
+title = "ruby #{ARGV*" "}"
+$0    = ARGV.shift
+Process.setproctitle(title) if Process.methods.include?(:setproctitle)
 
 require 'rubygems'
 begin
   require 'executable-hooks/hooks'
-  Gem::ExecutableHooks.run(original_file)
+  Gem::ExecutableHooks.run($0)
 rescue LoadError
   warn "unable to load executable-hooks/hooks" if ENV.key?('ExecutableHooks_DEBUG')
 end
 
-eval File.read(original_file), binding, original_file
+eval File.read($0), binding, $0
