@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.2.3
+date: 2013-09-24
+
+- fix detecting program name and system process title, fix #8, update #7, update #5
+
 ## 1.2.2
 date: 2013-09-23
 
