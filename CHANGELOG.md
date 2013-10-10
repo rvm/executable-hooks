@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.2.4
+date: 2013-10-10
+
+- raise exception if can not write to bindir, fix #9
+
 ## 1.2.3
 date: 2013-09-24
 
