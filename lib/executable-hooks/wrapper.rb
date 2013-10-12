@@ -45,9 +45,9 @@ this can potentially break 'executable-hooks' and gem executables overall!
       wrapper_path = File.expand_path( "bin/#{wrapper_name}", full_gem_path )
 
       if File.exist?(wrapper_path) && !File.exist?(destination)
+        FileUtils.mkdir_p(bindir) unless File.exist?(bindir)
         # exception based on Gem::Installer.generate_bin
         raise Gem::FilePermissionError.new(bindir) unless File.writable?(bindir)
-        FileUtils.mkdir_p(bindir)
         FileUtils.cp(wrapper_path, destination)
         File.chmod(0775, destination)
       end
