@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.2.6
+date: 2013-10-21
+
+- Remind users about regenerating binstubs "in case of problems", merge #11
+
+## 1.2.5
+date: 2013-10-12
+
+-  first try to create the bin dir then check if it is writable, update #9, update wayneeseguin/rvm#2277
+
 ## 1.2.4
 date: 2013-10-10
 
