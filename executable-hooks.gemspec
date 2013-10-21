@@ -13,6 +13,11 @@ Gem::Specification.new do |s|
   s.summary     = %q{
     Hook into rubygems executables allowing extra actions to be taken before executable is run.
   }
+  s.post_install_message = <<-MESSAGE
+# In case of problems run the following command to update binstubs:
+gem regenerate_binstubs
+  MESSAGE
+
 
   s.files       = `git ls-files`.split("\n")
   s.test_files  = `git ls-files -- {test,spec,features}/*`.split("\n")
