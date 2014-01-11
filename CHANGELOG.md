@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.3.0
+date: 2014-01-11
+
+- First try to fix binstubs before installing them, fix wayneeseguin/rvm#2536
+
 ## 1.2.6
 date: 2013-10-21
 

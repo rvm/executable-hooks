@@ -43,22 +43,70 @@ class RegenerateBinstubsCommand < Gem::Command
     specs = installed_gems.select{|spec| spec.name =~ /^#{name}/i }
     specs.each do |spec|
       unless spec.executables.empty?
-        org_gem_path = Gem.path.find{|path|
-          File.exists? File.join path, 'gems', spec.full_name
-        } || Gem.dir
-        cache_gem = File.join(org_gem_path, 'cache', spec.file_name)
-        if File.exist? cache_gem
-          puts "#{spec.name} #{spec.version}"
-          inst = Gem::Installer.new Dir[cache_gem].first, :wrappers => true, :force => true, :install_dir => org_gem_path
-          ExecutableHooksInstaller.bundler_generate_bin(inst)
-        else
-          $stderr.puts "##{spec.name} #{spec.version} not found in GEM_PATH"
-        end
+        try_to_fix_binstubs(spec) or
+        try_to_install_binstubs(spec) or
+        $stderr.puts "##{spec.name} #{spec.version} not found in GEM_PATH"
       end
     end
   end
 
   private
+
+  def try_to_fix_binstubs(spec)
+    executable_paths =
+    spec.executables.map do |executable|
+      path = expanded_bin_paths.detect{|path| File.exist?(File.join(path, executable)) }
+      File.join(path, executable) if path
+    end
+    return false if executable_paths.include?(nil) # not found
+    executable_shebangs =
+    executable_paths.map do |path|
+      [path, File.readlines(path).map(&:chomp)]
+    end
+    return false if executable_shebangs.detect{|path, lines| !lines[0] =~ /^#!\// }
+    puts "#{spec.name} #{spec.version}"
+    executable_shebangs.map do |path, lines|
+      lines[0] = "#!/usr/bin/env ruby_executable_hooks"
+      File.open(path, "w") do |file|
+        file.puts(lines)
+      end
+    end
+  end
+
+  def expanded_bin_paths
+    @expanded_bin_paths ||= begin
+      paths = expanded_gem_paths.map{|path| File.join(path, "bin") }
+      paths << RbConfig::CONFIG["bindir"]
+      paths
+    end
+  end
+
+  def try_to_install_binstubs(spec)
+    org_gem_path = expanded_gem_paths.find{|path|
+      File.exists? File.join path, 'gems', spec.full_name
+    } || Gem.dir
+    cache_gem = File.join(org_gem_path, 'cache', spec.file_name)
+    if File.exist? cache_gem
+      puts "#{spec.name} #{spec.version}"
+      inst = Gem::Installer.new Dir[cache_gem].first, :wrappers => true, :force => true, :install_dir => org_gem_path
+      ExecutableHooksInstaller.bundler_generate_bin(inst)
+    else
+      false
+    end
+  end
+
+  def expanded_gem_paths
+    @expanded_gem_paths ||=
+    Gem.path.map do |path|
+      paths = [path]
+      while File.symlink?(path)
+        path = File.readlink(path)
+        paths << path
+      end
+      paths
+    end.flatten
+  end
+
   def installed_gems
     if Gem::VERSION > '1.8' then
       Gem::Specification.to_a
