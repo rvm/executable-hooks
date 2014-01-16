@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.3.1
+date: 2014-01-16
+
+- do not hardcode env ruby_executable_hooks when using shortcut try_to_fix_binstubs, fix #12
+
 ## 1.3.0
 date: 2014-01-11
 
