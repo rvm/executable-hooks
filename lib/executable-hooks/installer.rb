@@ -40,7 +40,7 @@ module ExecutableHooksInstaller
       which = which.gsub(/\$(\w+)/) do
         case $1
         when "env"
-          @env_path ||= Gem::Installer::ENV_PATHS.find {|env_path| File.executable? env_path }
+          env_path
         when "ruby"
           "#{Gem.ruby}#{opts}"
         when "exec"
@@ -58,9 +58,12 @@ module ExecutableHooksInstaller
     elsif opts then
       "#!/bin/sh\n'exec' #{ruby_name.dump} '-x' \"$0\" \"$@\"\n#{shebang}"
     else
-      @env_path ||= Gem::Installer::ENV_PATHS.find {|env_path| File.executable? env_path }
-      "#!#{@env_path} #{ruby_name}"
+      "#!#{env_path} #{ruby_name}"
     end
+  end
+
+  def self.env_path
+    @env_path ||= Gem::Installer::ENV_PATHS.find {|path| File.executable?(path) }
   end
 
   # Return the text for an application file.

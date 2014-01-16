@@ -66,7 +66,7 @@ class RegenerateBinstubsCommand < Gem::Command
     return false if executable_shebangs.detect{|path, lines| !lines[0] =~ /^#!\// }
     puts "#{spec.name} #{spec.version}"
     executable_shebangs.map do |path, lines|
-      lines[0] = "#!/usr/bin/env ruby_executable_hooks"
+      lines[0] = "#!#{ExecutableHooksInstaller.env_path} #{ExecutableHooks::Wrapper.expanded_wrapper_name}"
       File.open(path, "w") do |file|
         file.puts(lines)
       end
