@@ -28,6 +28,7 @@ Warning:
     Found    custom_shebang: '#{Gem.configuration[:custom_shebang]}',
     Expected custom_shebang: '#{expected_shebang}',
 this can potentially break 'executable-hooks' and gem executables overall!
+Check your '~/.gemrc' and '/etc/gemrc' for 'custom_shebang' and remove it.
 ")
       end
     end
