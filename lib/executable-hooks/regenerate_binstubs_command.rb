@@ -65,11 +65,14 @@ class RegenerateBinstubsCommand < Gem::Command
     end
     return false if executable_shebangs.detect{|path, lines| !lines[0] =~ /^#!\// }
     puts "#{spec.name} #{spec.version}"
+    executable_mode = 0111
     executable_shebangs.map do |path, lines|
       lines[0] = "#!#{ExecutableHooksInstaller.env_path} #{ExecutableHooks::Wrapper.expanded_wrapper_name}"
       File.open(path, "w") do |file|
         file.puts(lines)
       end
+      mode = File.stat(path).mode
+      File.chmod(mode | executable_mode, path) if mode & executable_mode != executable_mode
     end
   end
 
