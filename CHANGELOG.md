@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.3.2
+date: 2014-06-06
+
+- make sure executable mode is set on binaries when using fast fix, update wayneeseguin/rvm#2894
+
 ## 1.3.1
 date: 2014-01-16
 
