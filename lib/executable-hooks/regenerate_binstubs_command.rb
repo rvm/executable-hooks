@@ -55,7 +55,7 @@ class RegenerateBinstubsCommand < Gem::Command
   def try_to_fix_binstubs(spec)
     executable_paths =
     spec.executables.map do |executable|
-      path = expanded_bin_paths.detect{|path| File.exist?(File.join(path, executable)) }
+      path = expanded_bin_paths.detect{|bin_path| File.exist?(File.join(bin_path, executable)) }
       File.join(path, executable) if path
     end
     return false if executable_paths.include?(nil) # not found
