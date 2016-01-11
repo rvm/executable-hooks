@@ -63,7 +63,7 @@ class RegenerateBinstubsCommand < Gem::Command
     executable_paths.map do |path|
       [path, File.readlines(path).map(&:chomp)]
     end
-    return false if executable_shebangs.detect{|path, lines| !lines[0] =~ /^#!\// }
+    return false if executable_shebangs.detect{|path, lines| !(lines[0] =~ /^#!\//) }
     puts "#{spec.name} #{spec.version}"
     executable_mode = 0111
     executable_shebangs.map do |path, lines|
