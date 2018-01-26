@@ -2,9 +2,11 @@ module ExecutableHooksInstaller
   # Iterate through executables and generate wrapper for each one,
   # extract of rubygems code
   def self.bundler_generate_bin(inst)
-    return if inst.spec.executables.nil? or inst.spec.executables.empty?
+    return if inst.spec.executables.nil?
+    executables = inst.spec.executables.reject{ |name| name == 'executable-hooks-uninstaller' }
+    return if executables.empty?
     bindir = inst.bin_dir ? inst.bin_dir : Gem.bindir(inst.gem_home)
-    inst.spec.executables.each do |filename|
+    executables.each do |filename|
       filename.untaint
       original = File.join bindir, filename
       if File.exists?( original )

@@ -4,8 +4,37 @@ require 'rubygems/version'
 require 'executable-hooks/wrapper'
 
 class RegenerateBinstubsCommand < Gem::Command
+  def self.default_install_options
+    require 'rubygems/commands/install_command'
+    Gem::Command.extra_args = Gem.configuration[:gem]
+    config_args = Gem.configuration[:install]
+    config_args =
+      case config_args
+      when String
+        config_args.split ' '
+      else
+        Array(config_args)
+      end
+    Gem::Command.add_specific_extra_args 'install', config_args
+    ic = Gem::Commands::InstallCommand.new
+    ic.handle_options ["install"]
+    ic.options
+  end
+
   def initialize
     super 'regenerate_binstubs', 'Re run generation of executable wrappers for gems.'
+
+    add_option(:"Install/Update", '-i', '--install-dir DIR',
+      'Gem repository directory to get installed',
+      'gems') do |value, options|
+      options[:install_dir] = File.expand_path(value)
+    end
+
+    add_option(:"Install/Update", '-n', '--bindir DIR',
+      'Directory where binary files are',
+      'located') do |value, options|
+      options[:bin_dir] = File.expand_path(value)
+    end
   end
 
   def arguments # :nodoc:
@@ -33,17 +62,18 @@ class RegenerateBinstubsCommand < Gem::Command
       # https://github.com/rubygems/rubygems/issues/326
       puts "try also: gem pristine --binstubs"
     end
-    ExecutableHooks::Wrapper.install
+    ExecutableHooks::Wrapper.new(options).install
     execute_no_wrapper
   end
 
-  def execute_no_wrapper
+  def execute_no_wrapper(wrapper_name = ExecutableHooks::Wrapper.expanded_wrapper_name)
     require 'executable-hooks/installer'
     name = get_one_optional_argument || ''
     specs = installed_gems.select{|spec| spec.name =~ /^#{name}/i }
     specs.each do |spec|
-      unless spec.executables.empty?
-        try_to_fix_binstubs(spec) or
+      executables = spec.executables.reject{ |name| name == 'executable-hooks-uninstaller' }
+      unless executables.empty?
+        try_to_fix_binstubs(spec, executables, wrapper_name) or
         try_to_install_binstubs(spec) or
         $stderr.puts "##{spec.name} #{spec.version} not found in GEM_PATH"
       end
@@ -52,9 +82,9 @@ class RegenerateBinstubsCommand < Gem::Command
 
   private
 
-  def try_to_fix_binstubs(spec)
+  def try_to_fix_binstubs(spec, executables, wrapper_name)
     executable_paths =
-    spec.executables.map do |executable|
+    executables.map do |executable|
       path = expanded_bin_paths.detect{|bin_path| File.exist?(File.join(bin_path, executable)) }
       File.join(path, executable) if path
     end
@@ -67,7 +97,7 @@ class RegenerateBinstubsCommand < Gem::Command
     puts "#{spec.name} #{spec.version}"
     executable_mode = 0111
     executable_shebangs.map do |path, lines|
-      lines[0] = "#!#{ExecutableHooksInstaller.env_path} #{ExecutableHooks::Wrapper.expanded_wrapper_name}"
+      lines[0] = "#!#{ExecutableHooksInstaller.env_path} #{wrapper_name}"
       File.open(path, "w") do |file|
         file.puts(lines)
       end
@@ -80,22 +110,25 @@ class RegenerateBinstubsCommand < Gem::Command
     @expanded_bin_paths ||= begin
       paths = expanded_gem_paths.map{|path| File.join(path, "bin") }
       paths << RbConfig::CONFIG["bindir"]
+      # TODO: bindir from options?
       paths
     end
   end
 
   def try_to_install_binstubs(spec)
-    org_gem_path = expanded_gem_paths.find{|path|
-      File.exists? File.join path, 'gems', spec.full_name
-    } || Gem.dir
+    org_gem_path = options[:install_dir] || existing_gem_path(spec.full_name) || Gem.dir
     cache_gem = File.join(org_gem_path, 'cache', spec.file_name)
     if File.exist? cache_gem
       puts "#{spec.name} #{spec.version}"
-      inst = Gem::Installer.new Dir[cache_gem].first, :wrappers => true, :force => true, :install_dir => org_gem_path
+      inst = Gem::Installer.new Dir[cache_gem].first, :wrappers => true, :force => true, :install_dir => org_gem_path, :bin_dir => options[:bin_dir]
       ExecutableHooksInstaller.bundler_generate_bin(inst)
     else
       false
     end
+  end
+
+  def existing_gem_path(full_name)
+    expanded_gem_paths.find{|path| File.exists? File.join path, 'gems', full_name}
   end
 
   def expanded_gem_paths

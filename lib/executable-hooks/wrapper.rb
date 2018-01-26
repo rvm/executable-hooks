@@ -4,21 +4,63 @@ require 'rubygems'
 require 'executable-hooks/specification'
 
 module ExecutableHooks
-  module Wrapper
+  class Wrapper
     def self.wrapper_name
       'ruby_executable_hooks'
     end
+
     def self.expanded_wrapper_name
       Gem.default_exec_format % self.wrapper_name
     end
-    def self.bindir
+
+    attr_reader :options
+
+    def initialize(options)
+      @options = options
+    end
+
+    def install
+      @bindir = options[:bin_dir] if options[:bin_dir]
+      ensure_custom_shebang
+
+      executable_hooks_spec = ExecutableHooks::Specification.find
+
+      if executable_hooks_spec
+        install_from( executable_hooks_spec.full_gem_path )
+      end
+    end
+
+    def install_from(full_gem_path)
+      wrapper_path = File.expand_path( "bin/#{self.class.wrapper_name}", full_gem_path )
+      bindir       = calculate_bindir(options)
+      destination  = calculate_destination(bindir)
+
+      if File.exist?(wrapper_path) && !File.exist?(destination)
+        FileUtils.mkdir_p(bindir) unless File.exist?(bindir)
+        # exception based on Gem::Installer.generate_bin
+        raise Gem::FilePermissionError.new(bindir) unless File.writable?(bindir)
+        FileUtils.cp(wrapper_path, destination)
+        File.chmod(0775, destination)
+      end
+    end
+
+    def uninstall
+      destination = calculate_destination(calculate_bindir(options))
+      FileUtils.rm_f(destination) if File.exist?(destination)
+    end
+
+    def calculate_bindir(options)
+      return options[:bin_dir] if options[:bin_dir]
       Gem.respond_to?(:bindir,true) ? Gem.send(:bindir) : File.join(Gem.dir, 'bin')
     end
-    def self.destination
-      File.expand_path( expanded_wrapper_name, bindir )
+
+    def calculate_destination(bindir)
+      File.expand_path(self.class.expanded_wrapper_name, bindir)
     end
-    def self.ensure_custom_shebang
-      expected_shebang = "$env #{expanded_wrapper_name}"
+
+
+    def ensure_custom_shebang
+      expected_shebang = "$env #{self.class.expanded_wrapper_name}"
 
       Gem.configuration[:custom_shebang] ||= expected_shebang
 
@@ -32,29 +74,6 @@ Check your '~/.gemrc' and '/etc/gemrc' for 'custom_shebang' and remove it.
 ")
       end
     end
-    def self.install
-      ensure_custom_shebang
 
-      executable_hooks_spec = ExecutableHooks::Specification.find
-
-      if executable_hooks_spec
-        install_from( executable_hooks_spec.full_gem_path )
-      end
-    end
-
-    def self.install_from(full_gem_path)
-      wrapper_path = File.expand_path( "bin/#{wrapper_name}", full_gem_path )
-
-      if File.exist?(wrapper_path) && !File.exist?(destination)
-        FileUtils.mkdir_p(bindir) unless File.exist?(bindir)
-        # exception based on Gem::Installer.generate_bin
-        raise Gem::FilePermissionError.new(bindir) unless File.writable?(bindir)
-        FileUtils.cp(wrapper_path, destination)
-        File.chmod(0775, destination)
-      end
-    end
-    def self.uninstall
-      FileUtils.rm_f(destination) if File.exist?(destination)
-    end
   end
 end

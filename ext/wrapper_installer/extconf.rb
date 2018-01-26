@@ -15,7 +15,8 @@ $: << File.expand_path("../../../lib", __FILE__)
 require 'executable-hooks/wrapper'
 require 'executable-hooks/regenerate_binstubs_command'
 # call the actions
-ExecutableHooks::Wrapper.install_from(File.expand_path("../../..", __FILE__))
+options = RegenerateBinstubsCommand.default_install_options
+ExecutableHooks::Wrapper.new(options).install_from(File.expand_path("../../..", __FILE__))
 RegenerateBinstubsCommand.new.execute_no_wrapper
 # unload the path, what was required stays ... but there is that much we can do
 $:.pop

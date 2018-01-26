@@ -10,6 +10,6 @@ begin
   Gem::ExecutableHooks.run($0)
 rescue LoadError
   warn "unable to load executable-hooks/hooks" if ENV.key?('ExecutableHooks_DEBUG')
-end
+end unless $0.end_with?('/executable-hooks-uninstaller')
 
 eval File.read($0), binding, $0
