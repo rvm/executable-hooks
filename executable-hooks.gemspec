@@ -24,6 +24,5 @@ gem regenerate_binstubs
   s.extensions  = %w( ext/wrapper_installer/extconf.rb )
   s.executables = %w( executable-hooks-uninstaller )
 
-  s.add_development_dependency "tf"
-  #s.add_development_dependency "smf-gem"
+  s.add_development_dependency "tf", "~>0.4"
 end
