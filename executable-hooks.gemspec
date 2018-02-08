@@ -15,7 +15,7 @@ Gem::Specification.new do |s|
   }
   s.post_install_message = <<-MESSAGE
 # In case of problems run the following command to update binstubs:
-gem regenerate_binstubs
+    gem regenerate_binstubs
   MESSAGE
 
 

@@ -1,28 +1,19 @@
 language: ruby
 rvm:
-  - jruby-18mode
-  - jruby-19mode
+  - jruby
   - jruby-head
-  - ruby-head
-  - rbx-18mode
-  - rbx-19mode
-  - 1.8.7
-  - 1.9.2
-  - 1.9.3
-  - 2.0.0
-  - 2.1
-  - 2.2
-  - 2.3
-  - 2.4
-  - 2.5
+  - rbx-3
 before_install:
+  - 'rvm @global do gem uninstall -a -x rubygems-bundler executable-hooks || true'
+  - 'rm -f $(rvm @global do gem env home)/bin/jruby_executable_hooks'
   - 'rm -rf $rvm_path/gems/*/{bin,gems}/rubygems-bundler-* $rvm_path/gems/*/{bin,gems}/executable-hooks-* $rvm_path/gems/*/bin/ruby_*_{wrapper,hooks}'
   - hash -r
+  - 'if [[ -n "${WITH_RUBYGEMS:-}" ]] ; then gem update --system "${WITH_RUBYGEMS}" ; fi'
   - gem build executable-hooks.gemspec
   - gem install executable-hooks-$(awk -F'"' '/VERSION/{print $2}' < lib/executable-hooks/version.rb).gem --development
 before_script:
   - unset BUNDLE_GEMFILE
-script: tf --text test-tf/*
+script: NOEXEC=0 tf --text test-tf${TEST_SUFFIX:-}/*
 notifications:
   irc:
     channels:
@@ -32,10 +23,21 @@ notifications:
       - mpapis@gmail.com
     on_failure: change
 matrix:
-  allow_failures:
-    - rvm: jruby-18mode
-    - rvm: jruby-19mode
-    - rvm: jruby-head
-    - rvm: rbx-18mode
-    - rvm: rbx-19mode
+  fast_finish: true
+  include:
+    - rvm: 1.8.7
+      env: WITH_RUBYGEMS=1.6.2
+    - rvm: 2.5
+      env: TEST_SUFFIX=-bundle
+    - rvm: 1.8.7
+    - rvm: 1.9.2
+    - rvm: 1.9.3
+    - rvm: 2.0.0
+    - rvm: 2.1
+    - rvm: 2.2
+    - rvm: 2.3
+    - rvm: 2.4
+    - rvm: 2.5
     - rvm: ruby-head
+  allow_failures:
+    - rvm: rbx-3

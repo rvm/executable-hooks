@@ -12,8 +12,8 @@ if
   require 'executable-hooks/wrapper'
 
   # Set the custom_shebang if user did not set one
-  Gem.pre_install do |inst|
-    ExecutableHooks::Wrapper.install
+  Gem.pre_install do |gem_installer|
+    ExecutableHooks::Wrapper.new(gem_installer.options).install
   end
 
   if Gem::Version.new(Gem::VERSION) < Gem::Version.new('2.0') then
