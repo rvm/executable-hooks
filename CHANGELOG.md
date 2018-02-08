@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.4.0
+date: 2018-02-08
+
+- Add bindir support, fixes #24
+
 ## 1.3.2
 date: 2014-06-06
 
