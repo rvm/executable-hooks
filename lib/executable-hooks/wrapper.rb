@@ -16,7 +16,7 @@ module ExecutableHooks
     attr_reader :options
 
     def initialize(options)
-      @options = options
+      @options = options || {}
     end
 
     def install

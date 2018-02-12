@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.4.1
+date: 2018-02-12
+
+- Fix bundle install, fixes #28
+
 ## 1.4.0
 date: 2018-02-08
 
