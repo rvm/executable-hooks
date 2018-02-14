@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.4.2
+date: 2018-02-14
+
+- Support rubygems 1.4.2, fixes #29
+
 ## 1.4.1
 date: 2018-02-12
 
