@@ -16,7 +16,7 @@ module ExecutableHooks
     attr_reader :options
 
     def initialize(options)
-      @options = options || {}
+      @options = options || RegenerateBinstubsCommand.default_install_options
     end
 
     def install
