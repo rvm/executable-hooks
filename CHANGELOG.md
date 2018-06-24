@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.5.0
+date: 2018-06-25
+
+- Support truffleruby, fixes rvm/rvm#4408
+
 ## 1.4.2
 date: 2018-02-14
 
