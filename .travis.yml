@@ -31,6 +31,8 @@ matrix:
       env: WITH_RUBYGEMS=1.6.2
     - rvm: 2.5
       env: TEST_SUFFIX=-bundle
+    - rvm: 2.5
+      env: TEST_SUFFIX=-truffleruby
     - rvm: 1.8.7
     - rvm: 1.9.2
     - rvm: 1.9.3

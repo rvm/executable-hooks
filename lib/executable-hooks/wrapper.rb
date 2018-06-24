@@ -35,7 +35,7 @@ module ExecutableHooks
       bindir       = calculate_bindir(options)
       destination  = calculate_destination(bindir)
 
-      if File.exist?(wrapper_path) && !File.exist?(destination)
+      if File.exist?(wrapper_path)
         FileUtils.mkdir_p(bindir) unless File.exist?(bindir)
         # exception based on Gem::Installer.generate_bin
         raise Gem::FilePermissionError.new(bindir) unless File.writable?(bindir)
