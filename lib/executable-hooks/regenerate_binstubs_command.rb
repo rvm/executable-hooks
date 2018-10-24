@@ -91,7 +91,7 @@ class RegenerateBinstubsCommand < Gem::Command
     return false if executable_paths.include?(nil) # not found
     executable_shebangs =
     executable_paths.map do |path|
-      [path, File.readlines(path).map(&:chomp)]
+      [path, File.readlines(path).map{|l|l.chomp}]
     end
     return false if executable_shebangs.detect{|path, lines| !(lines[0] =~ /^#!\//) }
     puts "#{spec.name} #{spec.version}"

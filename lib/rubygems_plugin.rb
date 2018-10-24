@@ -13,7 +13,7 @@ if
 
   # Set the custom_shebang if user did not set one
   Gem.pre_install do |gem_installer|
-    options = if gem_installer.methods.map(&:to_s).include?('options')
+    options = if gem_installer.methods.map{|m|m.to_s}.include?('options')
       gem_installer.options
     end
     ExecutableHooks::Wrapper.new(options).install
