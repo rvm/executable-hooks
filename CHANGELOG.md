@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.6.0
+date: 2018-10-25
+
+- Restore support for ruby-1.8.6, fixes #34
+- Do not force overwrite wrapper, fixes #33
+
 ## 1.5.0
 date: 2018-06-25
 
