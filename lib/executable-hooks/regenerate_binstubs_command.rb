@@ -128,7 +128,7 @@ class RegenerateBinstubsCommand < Gem::Command
   end
 
   def existing_gem_path(full_name)
-    expanded_gem_paths.find{|path| File.exists? File.join path, 'gems', full_name}
+    expanded_gem_paths.find{|path| File.exists?(File.join(path, 'gems', full_name))}
   end
 
   def expanded_gem_paths
