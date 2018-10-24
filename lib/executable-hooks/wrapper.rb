@@ -35,7 +35,7 @@ module ExecutableHooks
       bindir       = calculate_bindir(options)
       destination  = calculate_destination(bindir)
 
-      if File.exist?(wrapper_path)
+      if File.exist?(wrapper_path) && !same_file(wrapper_path, destination)
         FileUtils.mkdir_p(bindir) unless File.exist?(bindir)
         # exception based on Gem::Installer.generate_bin
         raise Gem::FilePermissionError.new(bindir) unless File.writable?(bindir)
@@ -43,6 +43,12 @@ module ExecutableHooks
         File.chmod(0775, destination)
       end
     end
+
+    def same_file(file1, file2)
+      File.exist?(file1) && File.exist?(file2) &&
+        File.read(file1) == File.read(file2)
+    end
+    private :same_file
 
     def uninstall
       destination = calculate_destination(calculate_bindir(options))
