@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
   s.license     = 'Apache 2.0'
   s.authors     = ["Michal Papis"]
   s.email       = ["mpapis@gmail.com"]
-  s.homepage    = "https://github.com/mpapis/executable-hooks"
+  s.homepage    = "https://github.com/rvm/executable-hooks"
   s.summary     = %q{
     Hook into rubygems executables allowing extra actions to be taken before executable is run.
   }
