@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.6.2
+date: 2021-01-26
+
+- Converts end_with? to match for Ruby 1.8.6 compatibility #37
+
 ## 1.6.1
 date: 2021-01-26
 
