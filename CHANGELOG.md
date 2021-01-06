@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.6.1
+date: 2021-01-26
+
+- Avoid Ruby 2.7 warning, merge #38
+
 ## 1.6.0
 date: 2018-10-25
 
