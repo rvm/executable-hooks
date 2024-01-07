@@ -6,7 +6,7 @@ Kernel.load(File.expand_path("../lib/executable-hooks/version.rb", __FILE__))
 Gem::Specification.new do |s|
   s.name        = "executable-hooks"
   s.version     = ExecutableHooks::VERSION
-  s.license     = 'Apache 2.0'
+  s.license     = 'Apache-2.0'
   s.authors     = ["Michal Papis"]
   s.email       = ["mpapis@gmail.com"]
   s.homepage    = "https://github.com/rvm/executable-hooks"

@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.7.0
+date: 2024-01-07
+
+- Replace use of File.exists? by File.exist? #41
+- Use Gem::Installer.at instead of Gem::Installer.new #40
+
 ## 1.6.2
 date: 2021-01-26
 
