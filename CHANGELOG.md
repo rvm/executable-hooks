@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.7.0
+## 1.7.1
 date: 2024-01-07
 
 - Replace use of File.exists? by File.exist? #41
